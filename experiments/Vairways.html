@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Victor Airways</title>
+<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+	var map;
+	function jsonp(url) {
+		var script = document.createElement("script");
+		script.setAttribute('src', url);
+		document.getElementsByTagName('head')[0].appendChild(script);
+	}
+	var segs = [];
+	var rows;
+	function victorAirways(o) {
+		console.log("victorAirways() start: " + (new Date).toTimeString());
+		rows = o["table"]["rows"];
+		var nextPoint;
+		var thisSeg;
+		var foundSegMatch;
+		for (var i = 0; i < rows.length - 1; i++) {
+			if (rows[i][0] === rows[i+1][0] && rows[i][1] === (rows[i+1][1] - 10)) {
+				thisSeg = [rows[i][2],rows[i+1][2]];
+				foundSegMatch = false;
+				for (var j = 0; j < segs.length; j++) {
+					if ((segs[j][0] === thisSeg[0] && segs[j][1] === thisSeg[1]) ||
+						(segs[j][0] === thisSeg[1] && segs[j][1] === thisSeg[0])) {
+						foundSegMatch = true;
+						break;
+					}
+				}
+				if (!foundSegMatch) {
+					segs.push(thisSeg);
+				}
+			}
+		}
+		console.log("segs array done: " + (new Date).toTimeString());
+		for (var i = 0; i < segs.length; i++) {
+			var from = segs[i][0].split(",");
+			var to = segs[i][1].split(",");
+			var fromLatLng = new google.maps.LatLng(parseFloat(from[0]),parseFloat(from[1]));
+			var toLatLng = new google.maps.LatLng(parseFloat(to[0]),parseFloat(to[1]));
+			var newSeg = new google.maps.Polyline({
+				path: [fromLatLng, toLatLng],
+				strokeColor: "#0000FF",
+				strokeOpacity: 0.5,
+				strokeWeight: 2
+			});
+			newSeg.setMap(map);
+			
+		}
+		console.log("victorAirways() end: " + (new Date).toTimeString());
+	}
+
+	function initialize() {
+		var myLatLng = new google.maps.LatLng(40, -80);
+		var myOptions = {
+			zoom: 5,
+			center: myLatLng,
+			mapTypeId: google.maps.MapTypeId.TERRAIN
+		};
+
+		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+		var sql = "select airway_designation as airway,airway_point_seq_num as seq,navaid_facility_fix_coordinates as coord from 844889 where airway_designation like 'V%'";
+		var sql = encodeURIComponent(sql).replace(/%20/g,"+");
+		console.log("start jsonp(): " + (new Date).toTimeString());
+		jsonp("https://www.google.com/fusiontables/api/query?jsonCallback=victorAirways&sql=" + sql);
+	}
+</script>
+</head>
+<body onload="initialize()">
+  <div id="map_canvas"></div>
+</body>
+</html>

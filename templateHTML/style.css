@@ -1,0 +1,25 @@
+#header {
+	border: 1px solid black;
+}
+
+#midsection div {
+	float: left;
+	border: 1px solid black;
+}
+
+#leftside {
+	width: 13%;
+}
+
+#content {
+	width: 75%;
+}
+
+#rightside {
+	width: 11%;
+}
+
+#footer {
+	clear: both;
+	border: 1px solid black;
+}
