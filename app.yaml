@@ -16,5 +16,9 @@ handlers:
 - url: /experiments
   static_dir: experiments
 
+- url: /(.*\.(svg))
+  static_dir: /
+  mime_type: image/svg+xml
+
 - url: .*
   script: main.py

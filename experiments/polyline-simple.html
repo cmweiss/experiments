@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+<title>Google Maps JavaScript API v3 Example: Polyline Simple</title>
+<link href="http://code.google.com/apis/maps/documentation/javascript/examples/default.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+	var map;
+	function jsonp(url) {
+		var script = document.createElement("script");
+		script.setAttribute('src', url);
+		document.getElementsByTagName('head')[0].appendChild(script);
+	}
+	
+	function victorAirways(o) {
+		var rows = o["table"]["rows"];
+		var va = {};
+		for (var i = 0; i < rows.length; i++) {
+			var lat = parseFloat(rows[i][2].split(",")[0]);
+			var lon = parseFloat(rows[i][2].split(",")[1]);
+			if (va[rows[i][0]] == undefined) {
+				va[rows[i][0]] = [];
+			}
+			va[rows[i][0]].push(new google.maps.LatLng(lat, lon));
+		}
+		for (var vapath in va) {
+			var airway = new google.maps.Polyline({
+				path: va[vapath],
+				strokeColor: "#0000FF",
+				strokeOpacity: 0.5,
+				strokeWeight: 2
+			});
+			airway.setMap(map);
+		}
+	}
+  function initialize() {
+    var myLatLng = new google.maps.LatLng(40, -80);
+    var myOptions = {
+      zoom: 3,
+      center: myLatLng,
+      mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+
+    map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+/*    var flightPlanCoordinates = [
+        new google.maps.LatLng(37.772323, -122.214897),
+        new google.maps.LatLng(21.291982, -157.821856),
+        new google.maps.LatLng(-18.142599, 178.431),
+        new google.maps.LatLng(-27.46758, 153.027892)
+    ];
+    var flightPath = new google.maps.Polyline({
+      path: flightPlanCoordinates,
+      strokeColor: "#FF0000",
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+
+   flightPath.setMap(map); */
+   jsonp("https://www.google.com/fusiontables/api/query?sql=select+airway_designation+as+airway%2Cairway_point_seq_num+as+seq%2Cnavaid_facility_fix_coordinates+as+coord+from+844889+where+airway_designation+like+'V%25'&jsonCallback=victorAirways");
+  }
+</script>
+</head>
+<body onload="initialize()">
+  <div id="map_canvas"></div>
+</body>
+</html>

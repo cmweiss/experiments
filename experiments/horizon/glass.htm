@@ -1,7 +1,7 @@
 <!doctype html>
-<html  manifest="horizon.manifest" style="overflow: hidden;">
+<html style="overflow: hidden;">
 	<head>
-		<title>Horizon</title>
+		<title>Pocket Glass</title>
 		<link rel="apple-touch-icon" href="icon57.png" />
 		<meta name="viewport" content="width=device-width,initial-scale = 1.0,user-scalable=no" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -84,6 +84,35 @@
 			width: 100%;
 			height: 50%;
 		}
+		#dg {
+			position: absolute;
+			top: 240px;
+			left: 0px;
+			width: 320px;
+			height: 240px;
+			z-index: 100;
+		}
+		#rose {
+			position: relative;
+			top: 0px;
+			left: 0px;
+			width: 320px;
+			height: 240px;
+		}
+		#dgAirplane {
+			position: relative;
+			width: 200px;
+			height: 200px;
+			top: 20px;
+			left: 60px;
+		}
+		#dgRose {
+			position: relative;
+			width: 200px;
+			height: 200px;
+			top: -180px;
+			left: 60px;
+		}
 		</style>
 		<script>
 		function e2q(alpha,beta,gamma) {
@@ -146,15 +175,21 @@
 	<body>
 		<div id="screen">
 			<div id="angle"></div>
-			<img src="ChevronArc.svg" id="chevron"/>
+			<img src="svg/ChevronArc.svg" id="chevron"/>
 			<div id="pitchframe">
 				<div id="frame">
-					<img src="UpMark.svg" id="up"/>
+					<img src="svg/UpMark.svg" id="up"/>
 					<div id="hzn">
-						<img src="AttitudeTicks.svg" id="ticks"/>
+						<img src="svg/AttitudeTicks.svg" id="ticks"/>
 						<div id="sky"></div>
 						<div id="earth"></div>
 					</div>
+				</div>
+			</div>
+			<div id="dg">
+				<img id="dgAirplane" src="svg/dgAirplane.svg"/>
+				<div id="rose">
+					<img id="dgRose" src="svg/dgRose.svg"/>
 				</div>
 			</div>
 		</div>
@@ -180,9 +215,11 @@
 			
 		
 			attitude = beta - 90;
-			document.getElementById("angle").innerHTML = o.attitude.toFixed(1) + "&deg;<br/>f";
+			document.getElementById("angle").innerHTML = o.attitude.toFixed(1) + "&deg;<br/>g";
 			document.getElementById("frame").style.webkitTransform = "rotate(" + (-o.bank) + "deg)";
 			document.getElementById("hzn").style.top = (o.attitude * (240/90)) - 240 + "px";
+			
+			document.getElementById("dgRose").style.webkitTransform = "rotate(" + o.heading + "deg)";
 		}, delay);
 
 		</script>
