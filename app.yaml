@@ -4,6 +4,11 @@ runtime: python
 api_version: 1
 
 handlers:
+- url: /(.*\.svg)
+  mime_type: image/svg+xml
+  static_files: \1
+  upload: (.*\.svg)
+
 - url: /templateHTML
   static_dir: templateHTML
 
@@ -16,9 +21,6 @@ handlers:
 - url: /experiments
   static_dir: experiments
 
-- url: /(.*\.(svg))
-  static_dir: /
-  mime_type: image/svg+xml
-
-- url: .*
+- url: /.*
   script: main.py
+#   script: gae.py

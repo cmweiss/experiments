@@ -1,11 +1,11 @@
-<!doctype html>
-<html style="overflow: hidden;">
-	<head>
+<!DOCTYPE html>
+<html style="overflow: hidden;"><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 		<title>Pocket Glass</title>
-		<link rel="apple-touch-icon" href="icon57.png" />
-		<meta name="viewport" content="width=device-width,initial-scale = 1.0,user-scalable=no" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<link rel="apple-touch-icon" href="http://cmweiss.appspot.com/experiments/horizon/icon57.png">
+		<meta name="viewport" content="width=device-width,initial-scale = 1.0,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<style>
 		html body {
 			height: 480px;
@@ -103,17 +103,20 @@
 			position: relative;
 			width: 200px;
 			height: 200px;
-			top: 20px;
+			top: 15px;
 			left: 60px;
+			z-index: 110;
 		}
 		#dgRose {
 			position: relative;
 			width: 200px;
 			height: 200px;
-			top: -180px;
+			top: -190px;
 			left: 60px;
+			z-index: 105;
 		}
 		</style>
+
 		<script>
 		function e2q(alpha,beta,gamma) {
 			var rAlpha = alpha * Math.PI / 180;
@@ -174,22 +177,24 @@
 	</head>
 	<body>
 		<div id="screen">
-			<div id="angle"></div>
-			<img src="svg/ChevronArc.svg" id="chevron"/>
+			<div id="angle">-0.0°<br>g</div>
+			<img src="ChevronArc.svg" id="chevron">
 			<div id="pitchframe">
+
 				<div id="frame">
-					<img src="svg/UpMark.svg" id="up"/>
-					<div id="hzn">
-						<img src="svg/AttitudeTicks.svg" id="ticks"/>
+					<img src="UpMark.svg" id="up">
+					<div style="top: -240px;" id="hzn">
+						<img src="AttitudeTicks.svg" id="ticks">
 						<div id="sky"></div>
 						<div id="earth"></div>
 					</div>
 				</div>
 			</div>
+
 			<div id="dg">
-				<img id="dgAirplane" src="svg/dgAirplane.svg"/>
+				<img id="dgAirplane" src="dgAirplane.svg">
 				<div id="rose">
-					<img id="dgRose" src="svg/dgRose.svg"/>
+					<img id="dgRose" src="dgRose.svg">
 				</div>
 			</div>
 		</div>
@@ -224,5 +229,6 @@
 
 		</script>
 
-	</body>
-</html>
+	
+
+</body></html>
