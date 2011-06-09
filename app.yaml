@@ -9,6 +9,16 @@ handlers:
   static_files: \1
   upload: (.*\.svg)
 
+- url: /(.*\.COF)
+  mime_type: text/plain
+  static_files: \1
+  upload: (.*\.COF)
+
+- url: /(.*\.manifest)
+  mime_type: text/cache-manifest
+  static_files: \1
+  upload: (.*\.manifest)
+
 - url: /templateHTML
   static_dir: templateHTML
 

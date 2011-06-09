@@ -21,7 +21,7 @@
 		#chevron {
 			z-index: 100;
 			position:absolute;
-			top: 80px;
+			top: 0px;
 			left: 10%;
 			width: 80%;
 		}
@@ -47,7 +47,7 @@
 		#up {
 			z-index: 6;
 			position: relative;
-			top: 79px;
+			top: 0px;
 			display: block;
 			margin-left: auto;
 			margin-right: auto;
@@ -115,9 +115,17 @@
 			left: 60px;
 			z-index: 105;
 		}
+		#hdgAdj {
+			position: absolute;
+			left: 0px;
+/*			top: 160px; */
+			top: 0px;
+			z-index: 1000;
+		}
 		</style>
 
 		<script>
+		var hdgCorrection = 0;
 		function e2q(alpha,beta,gamma) {
 			var rAlpha = alpha * Math.PI / 180;
 			var rBeta = beta * Math.PI / 180;
@@ -172,19 +180,51 @@
 			
 			return {heading: heading, attitude: attitude, bank: bank};
 		}
+
+		var hdgAdj = {
+			timer: null,
+			start: function (dir) {
+				hdgAdj.stop();
+				console.log("About to start timer.");
+				hdgAdj.timer = setInterval(function() {
+					console.log("Timer started for: " + dir);
+					window.hdgCorrection += (dir === "left" ? -1 : 1);
+					document.getElementById("adj").innerHTML=window.hdgCorrection;
+				}, 100)},
+			stop: function () {
+				console.log("Clearing timer: " + hdgAdj.timer);
+				clearInterval(hdgAdj.timer);
+			}
+		}
+		function updateDisplay() {
+			var quat = e2q(alpha,beta,gamma);
+			var nQ = quatMultiply(quat, rQ);
+			var o = q2e(nQ.w,nQ.x,nQ.y,nQ.z);
+			
+		
+			attitude = beta - 90;
+			document.getElementById("angle").innerHTML = o.attitude.toFixed(1) + "&deg;<br/>h";
+			document.getElementById("frame").style.webkitTransform = "rotate(" + (-o.bank) + "deg)";
+			document.getElementById("hzn").style.top = (o.attitude * (240/90)) - 320 + "px";
+			
+			document.getElementById("dgRose").style.webkitTransform = "rotate(" + (o.heading + hdgCorrection.valueOf()) + "deg)";
+			document.getElementById("hdg").innerHTML = o.heading.toFixed(0);
+			document.getElementById("adjhdg").innerHTML = (o.heading + hdgCorrection.valueOf()).toFixed(0);
+		};
+
 		</script>
 
 	</head>
 	<body>
 		<div id="screen">
 			<div id="angle">-0.0°<br>g</div>
-			<img src="ChevronArc.svg" id="chevron">
+			<img src="ChevronArc.svg" id="chevron"/>
 			<div id="pitchframe">
 
 				<div id="frame">
-					<img src="UpMark.svg" id="up">
+					<img src="UpMark.svg" id="up"/>
 					<div style="top: -240px;" id="hzn">
-						<img src="AttitudeTicks.svg" id="ticks">
+						<img src="AttitudeTicks.svg" id="ticks"/>
 						<div id="sky"></div>
 						<div id="earth"></div>
 					</div>
@@ -192,10 +232,16 @@
 			</div>
 
 			<div id="dg">
-				<img id="dgAirplane" src="dgAirplane.svg">
+				<img id="dgAirplane" src="dgAirplane.svg"/>
 				<div id="rose">
-					<img id="dgRose" src="dgRose.svg">
+					<img id="dgRose" src="dgRose.svg"/>
 				</div>
+				<img id="hdgAdj" src="rotaryKnob.svg" usemap="#hdgAdjTouch"/>
+				<map name="hdgAdjTouch">
+					<area id="hdgAdjLeft" shape="rect" coords="0,0,50,50" alt="" onclick="void(0)"/>
+					<area id="hdgAdjRight" shape="rect" coords="50,0,100,50" alt="" onclick="void(0)"/>
+				</map>
+				<div style="position: absolute; top: 200px; left: 0px; background: white;">Hdg: <span id="hdg"></span> Adj: <span id="adj"></span> AdjHdg: <span id="adjhdg"></span></div>
 			</div>
 		</div>
 		<script>
@@ -207,26 +253,45 @@
 		// rQ is the quaternion about which the native frame of reference will be rotated.
 		var rQ = {w: Math.sqrt(0.5), x: 0, y: 0, z: -Math.sqrt(0.5)};
 
+		document.getElementById("hdgAdjLeft").onmouseover=function() {
+			hdgAdj.start('left');
+		};
+		document.getElementById("hdgAdjLeft").onmouseout=hdgAdj.stop;
+		document.getElementById("hdgAdjLeft").onmouseup=hdgAdj.stop;
+
+		document.getElementById("hdgAdjRight").onmouseover=function() {
+			hdgAdj.start('right');
+		};
+		document.getElementById("hdgAdjRight").onmouseout=hdgAdj.stop;
+		document.getElementById("hdgAdjRight").onmouseup=hdgAdj.stop;
+
+/*		document.getElementById("hdgAdjLeft").ontouchstart=function() {
+			hdgAdj.start('left');
+		};
+		document.getElementById("hdgAdjLeft").addEventListener('touchstart', function() {
+			hdgAdj.start('left');
+		}, true);
+		document.getElementById("hdgAdjLeft").ontouchend=hdgAdj.stop;
+		document.getElementById("hdgAdjLeft").ontouchcancel=hdgAdj.stop;
+		document.getElementById("hdgAdjRight").ontouchstart=function() {
+			hdgAdj.start('right');
+		};
+		document.getElementById("hdgAdjRight").ontouchend=hdgAdj.stop;
+		document.getElementById("hdgAdjRight").ontouchcancel=hdgAdj.stop;
+*/
+
 		window.ondeviceorientation = function(event) {
 			alpha = event.alpha;
 			beta = event.beta;
 			gamma = event.gamma;
+			
+			updateDisplay();
 		}
-
+/*
 		setInterval(function() {
-			var quat = e2q(alpha,beta,gamma);
-			var nQ = quatMultiply(quat, rQ);
-			var o = q2e(nQ.w,nQ.x,nQ.y,nQ.z);
-			
-		
-			attitude = beta - 90;
-			document.getElementById("angle").innerHTML = o.attitude.toFixed(1) + "&deg;<br/>g";
-			document.getElementById("frame").style.webkitTransform = "rotate(" + (-o.bank) + "deg)";
-			document.getElementById("hzn").style.top = (o.attitude * (240/90)) - 240 + "px";
-			
-			document.getElementById("dgRose").style.webkitTransform = "rotate(" + o.heading + "deg)";
+			updateDisplay();
 		}, delay);
-
+*/
 		</script>
 
 	
