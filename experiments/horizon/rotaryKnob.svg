@@ -22,7 +22,7 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.26"
+     inkscape:zoom="17.98"
      inkscape:cx="50"
      inkscape:cy="25"
      inkscape:document-units="px"
@@ -84,6 +84,14 @@
        id="guide3612"
        position="5.3982923,24.998959"
        orientation="0,1" />
+    <sodipodi:guide
+       orientation="-0.70710678,0.70710678"
+       position="50,24.998959"
+       id="guide2846" />
+    <sodipodi:guide
+       orientation="0.70710678,0.70710678"
+       position="50,24.998959"
+       id="guide2848" />
   </sodipodi:namedview>
   <defs
      id="defs4">
@@ -254,16 +262,27 @@
        sodipodi:type="arc" />
     <path
        sodipodi:open="true"
-       sodipodi:end="6.2872961"
-       sodipodi:start="3.1415653"
+       sodipodi:end="5.4963811"
+       sodipodi:start="3.9240857"
        transform="translate(0,1002.3622)"
-       d="M 29.997591,25.000906 C 29.997289,13.955409 38.951495,5.0010193 49.99737,5.0007172 61.043245,5.000415 69.997941,13.954315 69.998243,24.999812 c 10e-7,0.02759 -5.5e-5,0.05517 -1.69e-4,0.08276"
+       d="m 35.814525,10.89962 a 20.000326,19.999641 0 0 1 28.30586,-0.06101"
        sodipodi:ry="19.999641"
        sodipodi:rx="20.000326"
        sodipodi:cy="25.000359"
        sodipodi:cx="49.997917"
        id="path3614"
-       style="opacity:1;marker-end:url(#Arrow2Mendl);stroke-opacity:1;fill-opacity:0.29411766000000000;marker-start:url(#Arrow2MstartV);stroke:#ffffff;stroke-linecap:butt;stroke-miterlimit:4;stroke-dasharray:none;stroke-width:1;marker-mid:none;fill:none"
+       style="fill:none;stroke:#ffffff;stroke-width:1;stroke-linecap:butt;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow2MstartV);marker-mid:none;marker-end:url(#Arrow2Mendl)"
        sodipodi:type="arc" />
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="50"
+       y="1032.3754"
+       id="text2854"><tspan
+         sodipodi:role="line"
+         id="tspan2856"
+         x="50"
+         y="1032.3754"
+         style="font-size:13px;fill:#ffffff">TOUCH</tspan></text>
   </g>
 </svg>

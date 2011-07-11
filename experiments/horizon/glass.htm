@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="overflow: hidden;"><head>
+<html manifest="glass.manifest" style="overflow: hidden;"><head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 		<title>Pocket Glass</title>
 		<link rel="apple-touch-icon" href="http://cmweiss.appspot.com/experiments/horizon/icon57.png">
@@ -118,15 +118,21 @@
 		#hdgAdj {
 			position: absolute;
 			left: 0px;
-/*			top: 160px; */
-			top: 0px;
+			top: 160px;
+/*			top: 0px; */
 			z-index: 1000;
+		}
+		.knob {
+			background-color: transparent;
+			border: none;
+			margin: 0px;
+			padding: 0px;
 		}
 		</style>
 
 		<script>
 		var hdgCorrection = 0;
-		function e2q(alpha,beta,gamma) {
+		function e2q(alpha,beta,gamma) {  // Convert Euler angles to quaternion
 			var rAlpha = alpha * Math.PI / 180;
 			var rBeta = beta * Math.PI / 180;
 			var rGamma = gamma * Math.PI / 180;
@@ -144,7 +150,7 @@
 			return {w: w, x: x, y: y, z: z};
 		}
 		
-		function e2aa(alpha,beta,gamma) {
+		function e2aa(alpha,beta,gamma) {  // Convert Euler angles to axis-angle
 			var rAlpha = alpha * Math.PI / 180;
 			var rBeta = beta * Math.PI / 180;
 			var rGamma = gamma * Math.PI / 180;
@@ -165,7 +171,7 @@
 			return {a: a, x: x, y: y, z: z};
 		}
 		
-		function quatMultiply (q1, q2) {
+		function quatMultiply (q1, q2) {  // Multiply quaternions
 			w = (q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z)
 			x = (q1.w * q2.x + q1.x * q2.w + q1.y * q2.z - q1.z * q2.y)
 			y = (q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x)
@@ -173,7 +179,7 @@
 			return {w: w, x: x, y: y, z: z}
 		}
 		
-		function q2e(w,x,y,z) {
+		function q2e(w,x,y,z) {  // Quaternion to Euler angles
 			var heading = Math.atan2(2 * y * w - 2 * x * z, 1 - 2 * (y * y) - 2 * (z * z)) * 180 / Math.PI;
 			var attitude = Math.asin(2 * x * y + 2 * z * w) * 180 / Math.PI;
 			var bank = Math.atan2(2 * x * w - 2 * y * z, 1 - 2 * (x * x) - 2 * (z * z)) * 180 / Math.PI;
@@ -182,17 +188,23 @@
 		}
 
 		var hdgAdj = {
+			firstLoop: true,
 			timer: null,
 			start: function (dir) {
 				hdgAdj.stop();
-				console.log("About to start timer.");
+				// console.log("About to start timer.");
 				hdgAdj.timer = setInterval(function() {
-					console.log("Timer started for: " + dir);
+					if (hdgAdj.firstLoop) {
+						// console.log("Timer started for: " + dir);
+						hdgAdj.firstLoop = false;
+					}
 					window.hdgCorrection += (dir === "left" ? -1 : 1);
 					document.getElementById("adj").innerHTML=window.hdgCorrection;
-				}, 100)},
+					updateDisplay();
+				}, 50)},
 			stop: function () {
-				console.log("Clearing timer: " + hdgAdj.timer);
+				hdgAdj.firstLoop = true;
+				// console.log("Clearing timer: " + hdgAdj.timer);
 				clearInterval(hdgAdj.timer);
 			}
 		}
@@ -202,8 +214,8 @@
 			var o = q2e(nQ.w,nQ.x,nQ.y,nQ.z);
 			
 		
-			attitude = beta - 90;
-			document.getElementById("angle").innerHTML = o.attitude.toFixed(1) + "&deg;<br/>h";
+//			attitude = beta - 90;
+//			document.getElementById("angle").innerHTML = o.attitude.toFixed(1) + "&deg;<br/>i";
 			document.getElementById("frame").style.webkitTransform = "rotate(" + (-o.bank) + "deg)";
 			document.getElementById("hzn").style.top = (o.attitude * (240/90)) - 320 + "px";
 			
@@ -217,7 +229,7 @@
 	</head>
 	<body>
 		<div id="screen">
-			<div id="angle">-0.0°<br>g</div>
+			<div id="angle">j</div>
 			<img src="ChevronArc.svg" id="chevron"/>
 			<div id="pitchframe">
 
@@ -236,12 +248,8 @@
 				<div id="rose">
 					<img id="dgRose" src="dgRose.svg"/>
 				</div>
-				<img id="hdgAdj" src="rotaryKnob.svg" usemap="#hdgAdjTouch"/>
-				<map name="hdgAdjTouch">
-					<area id="hdgAdjLeft" shape="rect" coords="0,0,50,50" alt="" onclick="void(0)"/>
-					<area id="hdgAdjRight" shape="rect" coords="50,0,100,50" alt="" onclick="void(0)"/>
-				</map>
-				<div style="position: absolute; top: 200px; left: 0px; background: white;">Hdg: <span id="hdg"></span> Adj: <span id="adj"></span> AdjHdg: <span id="adjhdg"></span></div>
+				<span id="hdgAdj"><button type="button" id="hdgAdjLeft" class="knob"><img src="adjLeft.svg"/></button><button type="button" id="hdgAdjRight" class="knob"><img src="adjRight.svg"/></button></span>
+				<div style="position: absolute; top: 200px; left: 0px; background: white; display: none;">Hdg: <span id="hdg"></span> Adj: <span id="adj"></span> AdjHdg: <span id="adjhdg"></span></div>
 			</div>
 		</div>
 		<script>
@@ -250,35 +258,26 @@
 		var beta = 90;
 		var gamma = 0;
 		var attitude = 0;
+		var supportsTouch = 'createTouch' in document; // evaluates to true if the device supports touch events
+		var startEvent = supportsTouch ? "ontouchstart" : "onmousedown";
+		var stopEvent = supportsTouch ? "ontouchend" : "onmouseup";
+
 		// rQ is the quaternion about which the native frame of reference will be rotated.
 		var rQ = {w: Math.sqrt(0.5), x: 0, y: 0, z: -Math.sqrt(0.5)};
 
-		document.getElementById("hdgAdjLeft").onmouseover=function() {
+		// Left heading adjust
+		document.getElementById("hdgAdjLeft")[startEvent]=function() {
 			hdgAdj.start('left');
 		};
-		document.getElementById("hdgAdjLeft").onmouseout=hdgAdj.stop;
-		document.getElementById("hdgAdjLeft").onmouseup=hdgAdj.stop;
+		document.getElementById("hdgAdjLeft")[stopEvent]=hdgAdj.stop;
+		if (!supportsTouch) document.getElementById("hdgAdjLeft").onmouseout=hdgAdj.stop;
 
-		document.getElementById("hdgAdjRight").onmouseover=function() {
+		// Right heading adjust
+		document.getElementById("hdgAdjRight")[startEvent]=function() {
 			hdgAdj.start('right');
 		};
-		document.getElementById("hdgAdjRight").onmouseout=hdgAdj.stop;
-		document.getElementById("hdgAdjRight").onmouseup=hdgAdj.stop;
-
-/*		document.getElementById("hdgAdjLeft").ontouchstart=function() {
-			hdgAdj.start('left');
-		};
-		document.getElementById("hdgAdjLeft").addEventListener('touchstart', function() {
-			hdgAdj.start('left');
-		}, true);
-		document.getElementById("hdgAdjLeft").ontouchend=hdgAdj.stop;
-		document.getElementById("hdgAdjLeft").ontouchcancel=hdgAdj.stop;
-		document.getElementById("hdgAdjRight").ontouchstart=function() {
-			hdgAdj.start('right');
-		};
-		document.getElementById("hdgAdjRight").ontouchend=hdgAdj.stop;
-		document.getElementById("hdgAdjRight").ontouchcancel=hdgAdj.stop;
-*/
+		document.getElementById("hdgAdjRight")[stopEvent]=hdgAdj.stop;
+		if (!supportsTouch) document.getElementById("hdgAdjRight").onmouseout=hdgAdj.stop;
 
 		window.ondeviceorientation = function(event) {
 			alpha = event.alpha;
@@ -287,11 +286,6 @@
 			
 			updateDisplay();
 		}
-/*
-		setInterval(function() {
-			updateDisplay();
-		}, delay);
-*/
 		</script>
 
 	
