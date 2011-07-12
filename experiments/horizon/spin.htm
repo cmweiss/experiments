@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html style="overflow: hidden;"><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		<title>Spin</title>
+		<meta name="viewport" content="width=device-width,initial-scale = 1.0,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<style>
+		html body {
+			height: 480px;
+			width: 320px;
+			overflow: hidden;
+		}
+		#arrow {
+			text-align: center;
+			font-size: 10em;
+		}
+		</style>
+
+		<script>
+		var angle = 0;
+		var supportsTouch = 'createTouch' in document;
+		var startEvent = supportsTouch ? "ontouchstart" : "onmousedown";
+		var stopEvent = supportsTouch ? "ontouchend" : "onmouseup";
+		
+		var spin = {
+			firstLoop: true,
+			timer: null,
+			start: function (dir) {
+				spin.stop();
+				console.log("About to start timer.");
+				spin.timer = setInterval(function() {
+					if (spin.firstLoop) {
+						console.log("Timer started for: " + dir);
+						spin.firstLoop = false;
+					}
+					angle += (dir === "left" ? -1 : 1) * 7;
+					updateDisplay();
+				}, 10)},
+			stop: function () {
+				spin.firstLoop = true;
+				console.log("Clearing timer: " + spin.timer);
+				clearInterval(spin.timer);
+			}
+		}
+		function updateDisplay() {
+			document.getElementById("arrow").style.webkitTransform = "rotate(" + angle + "deg)";
+			document.getElementById("arrow").style.MozTransform = "rotate(" + angle + "deg)";
+		};
+
+		function init() {
+			var arrow = document.getElementById("arrow");
+			arrow[startEvent]=function() {
+				spin.start('left');
+			};
+			arrow[stopEvent]=spin.stop;
+			if (!supportsTouch) {arrow.onmouseout=spin.stop;}
+		}
+		</script>
+
+	</head>
+	<body>
+		<div id="arrow">&gt;</div>
+		<script>init();</script>
+</body></html>

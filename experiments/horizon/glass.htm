@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html manifest="glass.manifest" style="overflow: hidden;"><head>
+<html style="overflow: hidden;"><head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 		<title>Pocket Glass</title>
 		<link rel="apple-touch-icon" href="http://cmweiss.appspot.com/experiments/horizon/icon57.png">
 		<meta name="viewport" content="width=device-width,initial-scale = 1.0,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="add2home.css">
 		<style>
 		html body {
 			height: 480px;
@@ -17,6 +18,12 @@
 			top: 0;
 			left: 0;
 			z-index: 10;
+		}
+		#i {
+			position: absolute;
+			top: 415px;
+			left: 275px;
+			z-index: 1000;
 		}
 		#chevron {
 			z-index: 100;
@@ -129,7 +136,19 @@
 			padding: 0px;
 		}
 		</style>
-
+		<script src="http://jsconsole.com/remote.js?2DC0767C-8173-47DC-B6C0-E495EAC6CF36"></script>
+		<script src="http://jsconsole.com/remote.js?2DC0767C-8173-47DC-B6C0-E495EAC6CF36"></script>
+		<script>
+		var addToHomeConfig = {
+			animationIn: 'bubble',
+			animationOut: 'drop',
+			startDelay: 500,
+			lifespan:20000,
+			expire:0,
+			touchIcon:true,
+		};
+		</script>
+		<script type="application/javascript" src="add2home.js"></script>
 		<script>
 		var hdgCorrection = 0;
 		function e2q(alpha,beta,gamma) {  // Convert Euler angles to quaternion
@@ -229,7 +248,8 @@
 	</head>
 	<body>
 		<div id="screen">
-			<div id="angle">j</div>
+			<div id="i"><a href="about.htm"><img src="infobutton-br.svg"/></a></div>
+			<div id="angle">b</div>
 			<img src="ChevronArc.svg" id="chevron"/>
 			<div id="pitchframe">
 
