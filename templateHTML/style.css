@@ -2,21 +2,22 @@
 	border: 1px solid black;
 }
 
-#midsection div {
+#leftside {
+	width: 13%;
 	float: left;
 	border: 1px solid black;
 }
 
-#leftside {
-	width: 13%;
-}
-
 #content {
 	width: 75%;
+	float: left;
+	border: 1px solid black;
 }
 
 #rightside {
 	width: 11%;
+	float: left;
+	border: 1px solid black;
 }
 
 #footer {
